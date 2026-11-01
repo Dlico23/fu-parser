@@ -8,7 +8,7 @@ This [Foundry Virtual Tabletop](https://foundryvtt.com/) module is designed to w
 
 1. Open the Foundry Setup screen and navigate to the "Add-on Modules" tab.
 2. Click the "Install Module" button on the bottom left.
-3. Paste`https://github.com/xeqi/fu-parser/releases/latest/download/module.json` into the "Manifest URL:" field on the bottom.
+3. Paste `https://github.com/Dlico23/fu-parser/releases/latest/download/module.json` into the "Manifest URL:" field on the bottom. **Temporary link, for testing only.** (Official link, disabled during the test: ~~`https://github.com/xeqi/fu-parser/releases/latest/download/module.json`~~)
 4. Click "Install".
 5. Launch a game world and go to Game Settings > Manage Modules and enable the module.
 
