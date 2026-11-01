@@ -2,7 +2,7 @@ import { afterAll, describe, expect, test } from "@jest/globals";
 import fs from "fs";
 import path from "path";
 import { tokenizePDF } from "../lexers/pdf";
-import { ItalianBook, normalizeItalianTokens, setItalianActive } from "./it";
+import { detectItalianBook, ItalianBook, normalizeItalianTokens, setItalianActive } from "./it";
 import { importItems } from "../../apps/pdf-importers/import-items";
 import {
 	importCoreBasicEquipment,
@@ -38,15 +38,18 @@ describeWithPdfs("Italian PDFs", () => {
 		test(
 			`${book}: every expected page parses`,
 			async () => {
-				setItalianActive(true);
+				let detected: ItalianBook | null = null;
 				const [withPage, destroy] = await tokenizePDF(
 					{
 						data: new Uint8Array(fs.readFileSync(path.join(pdfDir!, `${book}.pdf`))),
 						standardFontDataUrl: STANDARD_FONT_DATA_URL,
 					},
-					(tokens) => normalizeItalianTokens(tokens, book),
+					(tokens) => (detected ? normalizeItalianTokens(tokens, detected) : tokens),
 				);
 				destroyers.push(destroy);
+				detected = await detectItalianBook(withPage, book);
+				expect(detected).toBe(book);
+				setItalianActive(true);
 				const results = (await Promise.all(importersFor[book](withPage))).flat();
 				const failures = results.filter((r) => r.type !== "success").map((r) => r.page);
 				const details = results

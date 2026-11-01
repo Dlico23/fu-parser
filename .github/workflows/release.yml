@@ -5,7 +5,7 @@ env:
 
   latest_manifest_url: "https://github.com/${{github.repository}}/releases/latest/download/module.json"
 
-  release_module_url: "https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/fu-parser-it.zip"
+  release_module_url: "https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/fu-parser.zip"
 
 on:
   release:
@@ -47,7 +47,7 @@ jobs:
 
     - name: Create System Archive
       run: |
-        zip -r fu-parser-it.zip dist/*
+        zip -r fu-parser.zip dist/*
 
     - name: Update Release With Files
       id: create_version_release
@@ -58,6 +58,6 @@ jobs:
         draft: ${{ github.event.release.draft }}
         prerelease: ${{ github.event.release.prerelease }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: './module.json, ./fu-parser-it.zip'
+        artifacts: './module.json, ./fu-parser.zip'
         tag: ${{ github.event.release.tag_name }}
         body: ${{ github.event.release.body }}

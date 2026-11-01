@@ -1,18 +1,10 @@
 # Fabula Ultima importer
 
-> **Versione italiana.** Variante di [xeqi/fu-parser](https://github.com/xeqi/fu-parser) che importa anche i PDF italiani acquistati da Need Games. Il modulo si chiama `fu-parser-it` e può convivere con l'originale.
->
-> **Installazione locale:** `npm ci`, `npm run build`, poi copia il contenuto di `dist` in `Data/modules/fu-parser-it` di Foundry. Il libro si sceglie dal menu "Book type".
->
-> **Test sui PDF:** i PDF e i token estratti non vanno mai inseriti nella repo, perché contengono testo protetto e un watermark con dati personali. Copia i manuali in una cartella esterna come `FUCR.pdf`, `FUHF.pdf` e `FUTF.pdf`, poi esegui `FU_IT_PDF_DIR=<cartella> npm run test`.
-
 This [Foundry Virtual Tabletop](https://foundryvtt.com/) module is designed to work with [Unofficial Fabula Ultima System](https://github.com/League-of-Fabulous-Developers/FoundryVTT-Fabula-Ultima).  It add buttons for importing data from:
-1. a pdf of [Fabula Ultima](https://www.needgames.it/fabula-ultima-en/) by [Need Games](https://www.needgames.it/): english, watermarked by DriveThruRPG, or italian, bought from Need Games
+1. an english pdf, watermarked by DriveThruRPG, or an italian pdf, bought from Need Games, of [Fabula Ultima](https://www.needgames.it/fabula-ultima-en/) by [Need Games](https://www.needgames.it/)
 2. [Fultimator!](https://fabula-ultima-helper.web.app/)
 
 ## Installation
-
-The manifest below installs the original english-only module. For italian pdfs use the local installation described at the top of this file.
 
 1. Open the Foundry Setup screen and navigate to the "Add-on Modules" tab.
 2. Click the "Install Module" button on the bottom left.
@@ -86,6 +78,8 @@ For PDF parsing this module uses [PDF.js](https://mozilla.github.io/pdf.js/) to 
 1. Place a copy of your Fabula Ultima pdf at `data/Fabula_Ultima_-_Core_Rulebook.pdf`.
 2. `npm install` if not previously ran for an installation.
 3. `npm run test`
+
+To also test italian pdfs, set `FU_IT_PDF_DIR` to a folder outside the repo containing `FUCR.pdf`, `FUHF.pdf` and `FUTF.pdf`.
 
 The tests are a combination of property based generated tests for individual parsers, and functional tests against the pdf to confirm each pages parses into a single result.
 All Foundry VTT based functionality is untested.

@@ -11,10 +11,10 @@ import {
 } from "./pdf-importers/import-core-rulebook";
 import { importItems } from "./pdf-importers/import-items";
 import { normalizeImagePath } from "../external/project-fu";
-import { ItalianBook, normalizeItalianTokens, setItalianActive } from "../pdf/locale/it";
+import { detectItalianBook, ItalianBook, normalizeItalianTokens, setItalianActive } from "../pdf/locale/it";
 
 // Relative url that foundry serves for the compiled webworker
-pdfjsLib.GlobalWorkerOptions.workerSrc = "modules/fu-parser-it/pdf.worker.js";
+pdfjsLib.GlobalWorkerOptions.workerSrc = "modules/fu-parser/pdf.worker.js";
 
 // Foundry v10 creates these methods, but pdfjs does not like extra methods on Object that are enumerable,
 // so fix the compatibility issue
@@ -31,20 +31,20 @@ export type ParseResult = { page: number } & (
 );
 
 const parsePdf = async (pdfPath: string, bookType: BookType): Promise<[ParseResult[], () => Promise<void>]> => {
-	const italianBook = ITALIAN_BOOKS[bookType];
-	setItalianActive(italianBook !== undefined);
-	const [withPage, destroy] = await tokenizePDF(
-		pdfPath,
-		italianBook ? (tokens) => normalizeItalianTokens(tokens, italianBook) : undefined,
+	let italianBook: ItalianBook | null = null;
+	const [withPage, destroy] = await tokenizePDF(pdfPath, (tokens) =>
+		italianBook ? normalizeItalianTokens(tokens, italianBook) : tokens,
 	);
+	italianBook = await detectItalianBook(withPage, bookType);
+	setItalianActive(italianBook !== null);
 
-	switch ((italianBook ?? bookType) as Exclude<BookType, "FUCR_IT" | "FUHF_IT" | "FUTF_IT">) {
+	switch (bookType) {
 		case "FUCR_LEGACY":
 			return [await importCoreRulebook(withPage), destroy];
 		case "FUCR":
 			return [
 				[
-					...(await importItems(withPage, "FUCR")),
+					...(await importItems(withPage, bookType)),
 					...(await importCoreBasicEquipment(withPage)),
 					...(await importCoreBestiary(withPage)),
 				],
@@ -52,17 +52,17 @@ const parsePdf = async (pdfPath: string, bookType: BookType): Promise<[ParseResu
 			];
 		case "FUHF":
 			return [
-				[...(await importItems(withPage, "FUHF")), ...(await importHighFantasyBestiary(withPage))],
+				[...(await importItems(withPage, bookType)), ...(await importHighFantasyBestiary(withPage))],
 				destroy,
 			];
 		case "FUTF":
 			return [
-				[...(await importItems(withPage, "FUTF")), ...(await importTechnoFantasyBestiary(withPage))],
+				[...(await importItems(withPage, bookType)), ...(await importTechnoFantasyBestiary(withPage))],
 				destroy,
 			];
 		case "FUNF":
 			return [
-				[...(await importItems(withPage, "FUNF")), ...(await importNaturalFantasyBestiary(withPage))],
+				[...(await importItems(withPage, bookType)), ...(await importNaturalFantasyBestiary(withPage))],
 				destroy,
 			];
 		case "FUBA":
@@ -71,12 +71,8 @@ const parsePdf = async (pdfPath: string, bookType: BookType): Promise<[ParseResu
 };
 
 export type BookType = (typeof BOOK_TYPES)[number];
-export const BOOK_TYPES = ["FUCR_IT", "FUHF_IT", "FUTF_IT", "FUCR", "FUCR_LEGACY", "FUHF", "FUTF", "FUNF", "FUBA"] as const;
-const ITALIAN_BOOKS: Partial<Record<BookType, ItalianBook>> = { FUCR_IT: "FUCR", FUHF_IT: "FUHF", FUTF_IT: "FUTF" };
+export const BOOK_TYPES = ["FUCR", "FUCR_LEGACY", "FUHF", "FUTF", "FUNF", "FUBA"] as const;
 export const bookTypes = {
-	FUCR_IT: "Manuale Base (v1.4, italiano)",
-	FUHF_IT: "Atlante High Fantasy (v1.1, italiano)",
-	FUTF_IT: "Atlante Techno Fantasy (v1.1, italiano)",
 	FUCR: "Core Rulebook (v1.1)",
 	FUCR_LEGACY: "Core Rulebook (v1.02)",
 	FUHF: "High Fantasy Atlas (v1.1)",
@@ -133,7 +129,7 @@ export class ImportPDFApplication extends foundry.applications.api.HandlebarsApp
 	};
 
 	static PARTS = {
-		form: { template: "modules/fu-parser-it/templates/import-pdf.hbs", scrollable: [".fu-parser-parse-list"] },
+		form: { template: "modules/fu-parser/templates/import-pdf.hbs", scrollable: [".fu-parser-parse-list"] },
 	};
 
 	static async #onSubmit(

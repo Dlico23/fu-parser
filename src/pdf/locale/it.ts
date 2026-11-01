@@ -6,6 +6,22 @@ import { DamageType } from "../model/common";
 
 export type ItalianBook = "FUCR" | "FUHF" | "FUTF";
 
+// A stat block page of each book: the Italian PDFs read "Liv 10" where the English ones read "Lv 10".
+const STAT_BLOCK_PAGES: Record<ItalianBook, number> = { FUCR: 326, FUHF: 172, FUTF: 188 };
+
+export const detectItalianBook = async (
+	withPage: <R>(pageNum: number, f: (d: Token[]) => Promise<R>) => Promise<[R, () => boolean]>,
+	bookType: string,
+): Promise<ItalianBook | null> => {
+	if (!(bookType in STAT_BLOCK_PAGES)) return null;
+	const book = bookType as ItalianBook;
+	const [isItalian, cleanup] = await withPage(STAT_BLOCK_PAGES[book], async (tokens) =>
+		tokens.some((t) => isStringToken(t) && /^Liv \d+/.test(t.string)),
+	);
+	cleanup();
+	return isItalian ? book : null;
+};
+
 const ICON = /FabulaUltimaicons-Regular$/;
 const SECTION = /Antonio-Bold$/;
 const LEVEL = /Antonio-Regular$/;

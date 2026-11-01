@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test } from "@jest/globals";
 import { Token } from "../lexers/token";
 import {
+	detectItalianBook,
 	localizeFolderName,
 	normalizeItalianTokens,
 	parseItalianSpellDamage,
@@ -161,6 +162,21 @@ describe("restored text", () => {
 		setItalianActive(true);
 		expect(localizeFolderName("Weapons")).toBe("Armi");
 		expect(localizeFolderName("Fuori Lista")).toBe("Fuori Lista");
+	});
+});
+
+describe("detectItalianBook", () => {
+	const pageWith =
+		(tokens: Token[]) =>
+		async <R>(_page: number, f: (d: Token[]) => Promise<R>): Promise<[R, () => boolean]> => [await f(tokens), () => true];
+
+	test("recognizes the language from the stat blocks", async () => {
+		expect(await detectItalianBook(pageWith([t("Liv 10", LEVEL)]), "FUHF")).toBe("FUHF");
+		expect(await detectItalianBook(pageWith([t("Lv 10", LEVEL)]), "FUHF")).toBeNull();
+	});
+
+	test("leaves books without Italian support alone", async () => {
+		expect(await detectItalianBook(pageWith([t("Liv 10", LEVEL)]), "FUBA")).toBeNull();
 	});
 });
 
