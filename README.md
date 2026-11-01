@@ -75,7 +75,7 @@ For PDF parsing this module uses [PDF.js](https://mozilla.github.io/pdf.js/) to 
 2. `npm install` if not previously ran for an installation.
 3. `npm run test`
 
-To also test italian pdfs, copy the Manuale Base, Atlante High Fantasy and Atlante Techno Fantasy to a folder outside the repo as `FUCR.pdf`, `FUHF.pdf` and `FUTF.pdf`, then set `FU_IT_PDF_DIR` to that folder.  Never add pdfs to the repo: they contain copyrighted text and a personal watermark.
+To also test italian pdfs, copy them to a folder outside the repo, named after their book type (for example `FUCR.pdf`), then set `FU_IT_PDF_DIR` to that folder.  Never add pdfs to the repo: they contain copyrighted text and a personal watermark.
 
 The tests are a combination of property based generated tests for individual parsers, and functional tests against the pdf to confirm each pages parses into a single result.
 All Foundry VTT based functionality is untested.

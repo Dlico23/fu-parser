@@ -12,7 +12,7 @@ import {
 } from "../../apps/pdf-importers/import-core-rulebook";
 
 // Runs against your own PDFs, which never belong in the repository:
-// FU_IT_PDF_DIR=<folder with FUCR.pdf, FUHF.pdf, FUTF.pdf> npm run test
+// FU_IT_PDF_DIR=<folder with pdfs named after their book type, e.g. FUCR.pdf> npm run test
 const pdfDir = process.env.FU_IT_PDF_DIR;
 const describeWithPdfs = pdfDir ? describe : describe.skip;
 
@@ -34,7 +34,10 @@ describeWithPdfs("Italian PDFs", () => {
 		await Promise.all(destroyers.map((d) => d()));
 	});
 
-	for (const book of Object.keys(importersFor) as ItalianBook[]) {
+	const available = (Object.keys(importersFor) as ItalianBook[]).filter((b) => pdfDir && fs.existsSync(path.join(pdfDir, `${b}.pdf`)));
+	test("finds at least one pdf", () => expect(available.length).toBeGreaterThan(0));
+
+	for (const book of available) {
 		test(
 			`${book}: every expected page parses`,
 			async () => {
