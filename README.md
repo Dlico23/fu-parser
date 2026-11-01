@@ -25,7 +25,7 @@ It will currently import and create Items and Actors for:
 1. Install the module and confirm it shows up in "Add-on Modules" on the setup page.
 2. Launch a game world and go to Game Settings > Manage Modules and enable the module.
 3. Once enabled go to the Game Settings menu and there will be a "FU Importer" heading with an "Import PDF" button.
-4. Choose the book type, provide the pdf and determine the directories you would like to save extracted actor and item images. The book types are the same for every language: an italian pdf is recognized automatically.
+4. Choose the book type (Core Rulebook, High Fantasy Atlas, Techno Fantasy Atlas, Natural Fantasy Atlas or Bestiary Vol.1), provide the pdf and determine the directories you would like to save extracted actor and item images. The book types are the same for every language: an italian pdf is recognized automatically.
 5. Review the parse information provided.
 6. Click on "Import Data"
 
