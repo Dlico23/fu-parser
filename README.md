@@ -15,16 +15,17 @@ This [Foundry Virtual Tabletop](https://foundryvtt.com/) module is designed to w
 ## PDF Import
 
 It will currently import and create Items and Actors for:
-* Armor, Accessories, Shields, Weapons
+* Armor, Accessories, Shields, Weapons, Weapon Modules
 * Consumable Items
 * Bestiary
+* Camp Activities, Arcana and Rules, from the english books that include them
 
 ### Instructions
 
 1. Install the module and confirm it shows up in "Add-on Modules" on the setup page.
 2. Launch a game world and go to Game Settings > Manage Modules and enable the module.
 3. Once enabled go to the Game Settings menu and there will be a "FU Importer" heading with an "Import PDF" button.
-4. Provide the pdf and determine the directory you would like to save extracted images.
+4. Choose the book type, provide the pdf and determine the directories you would like to save extracted actor and item images. The book types are the same for every language: an italian pdf is recognized automatically.
 5. Review the parse information provided.
 6. Click on "Import Data"
 
@@ -34,14 +35,9 @@ This project is still in its early days.  Chances are your pdf will not work. Ba
 
 ## Fultimator Import
 
-Fultimator provides a json export file for npcs.  This file can be used to import data into your world.
+Fultimator provides a json export file for npcs and player characters.  This file can be used to import data into your world.
 
-NPCs with equipment require that an item with the same name exists in your foundry world.  The built in ones should be available if the pdf import was used.
-
-Currently the following are unsupported:
-1. Phases
-2. Multipart
-3. Notes
+NPCs with equipment require that an item with the same name exists in your foundry world.  The built in ones should be available if the pdf import was used.  An italian pdf creates items with italian names, so they only match Fultimator equipment with the same names.
 
 ### Instructions 
 ![FultimatorImporter](https://github.com/xeqi/fu-parser/assets/16845165/a088ea2f-6dca-4276-8468-3923b3c33afb)
@@ -79,7 +75,7 @@ For PDF parsing this module uses [PDF.js](https://mozilla.github.io/pdf.js/) to 
 2. `npm install` if not previously ran for an installation.
 3. `npm run test`
 
-To also test italian pdfs, set `FU_IT_PDF_DIR` to a folder outside the repo containing `FUCR.pdf`, `FUHF.pdf` and `FUTF.pdf`.
+To also test italian pdfs, copy the Manuale Base, Atlante High Fantasy and Atlante Techno Fantasy to a folder outside the repo as `FUCR.pdf`, `FUHF.pdf` and `FUTF.pdf`, then set `FU_IT_PDF_DIR` to that folder.  Never add pdfs to the repo: they contain copyrighted text and a personal watermark.
 
 The tests are a combination of property based generated tests for individual parsers, and functional tests against the pdf to confirm each pages parses into a single result.
 All Foundry VTT based functionality is untested.
