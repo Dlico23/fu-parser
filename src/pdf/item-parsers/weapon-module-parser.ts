@@ -6,7 +6,7 @@ import { WeaponModule } from "../model/weapon-module";
 export function parseWeaponModule(weaponModuleToken: ItemWithImageToken): WeaponModule {
 	const isShield =
 		weaponModuleToken.strings.find(
-			(token) => token.font.includes("PTSans-NarrowBold") && token.string.includes("Shield module"),
+			(token) => token.font.includes("PTSans-NarrowBold") && /Shield module|modulo Scudo/.test(token.string),
 		) !== undefined;
 	return isShield ? parseShield(weaponModuleToken) : parseWeapon(weaponModuleToken);
 }
@@ -16,7 +16,7 @@ function parseShield(weaponModuleToken: ItemWithImageToken): WeaponModule {
 	const name = weaponModuleStringTokens[0];
 	const cost = convertCosts(weaponModuleStringTokens[1]);
 	const description = parseModuleDescription(weaponModuleToken.strings.slice(4));
-	const isComplex = description.includes("this module enabled cannot have");
+	const isComplex = /this module enabled cannot have|modulo abilitato non può avere/.test(description);
 
 	// Accuracy, damage, damage type and category do not matter for shield. We will return some defaults.
 	return {
@@ -51,8 +51,8 @@ function parseWeapon(weaponModuleToken: ItemWithImageToken): WeaponModule {
 
 	const bonus = isNaN(maybeBonus) ? 0 : maybeBonus;
 	const accuracy = {
-		primary: primaryAccuracyStat as Stat,
-		secondary: secondaryAccuracyStat as Stat,
+		primary: primaryAccuracyStat.trim() as Stat,
+		secondary: secondaryAccuracyStat.trim() as Stat,
 		bonus: bonus,
 	};
 
@@ -67,7 +67,7 @@ function parseWeapon(weaponModuleToken: ItemWithImageToken): WeaponModule {
 
 	// We skip index 12(+) this is section separator
 	const description = parseModuleDescription(weaponModuleToken.strings.slice(13 + indexShift));
-	const isComplex = description.includes("this module enabled cannot have");
+	const isComplex = /this module enabled cannot have|modulo abilitato non può avere/.test(description);
 
 	return {
 		image: weaponModuleToken.image.image,
@@ -90,7 +90,8 @@ function parseModuleDescription(weaponModuleTokenStrings: StringToken[]) {
 			(token) =>
 				!token.font.includes("Wingdings-Regular") &&
 				!token.font.includes("FabulaUltimaicons-Regular") &&
-				token.string !== "No qualities.",
+				token.string !== "No qualities." &&
+				token.string !== "No Quality.",
 		),
 	);
 }

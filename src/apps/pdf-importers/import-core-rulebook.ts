@@ -27,6 +27,7 @@ import {
 	saveWeapons,
 } from "./save-utils";
 import { ParseResult } from "../import-pdf";
+import { restoreDescriptions } from "../../pdf/locale/it";
 
 type Wrapper = <T extends { name: string } | [string, { name: string }[]]>(
 	p: Parser<T[]>,
@@ -143,6 +144,13 @@ const FUHF_ART_OVERRIDES: Record<string, number> = {
 	ANAGNORISIS: 193,
 	"DRAMATIST’S QUILL": 193,
 	CATHARSIS: 193,
+	"DRAGO DI FUOCO": 176,
+	"MAXIMILIAN, IL PRINCIPE": 186,
+	"MAXIMILIAN, IL BASTIONE": 186,
+	MIMESI: 193,
+	AGNIZIONE: 193,
+	"PENNA DEL TRAGEDIOGRAFO": 193,
+	CATARSI: 193,
 };
 const FUTF_ART_OVERRIDES: Record<string, number> = {
 	"COMMISSIONER VYNE": 186,
@@ -156,6 +164,17 @@ const FUTF_ART_OVERRIDES: Record<string, number> = {
 	"THE PATRIARCH": 209,
 	"CONCEPTUAL DYAD": 209,
 	"THE PURE CONCEPT": 209,
+	"COMMISSARIO VYNE": 186,
+	"PROCESSORE PRIMARIO": 198,
+	"ARTO DIGITALE A": 198,
+	"ARTO DIGITALE B": 198,
+	"L’INSTANCABILE": 202,
+	"SCIAME D’ASSALTO": 202,
+	"SCIAME DI SUPPORTO": 202,
+	"AMMIRAGLIO CERYON": 202,
+	"IL PATRIARCA": 209,
+	"DIADE CONCETTUALE": 209,
+	"IL CONCETTO PURO": 209,
 };
 const FUNF_ART_OVERRIDES: Record<string, number> = {
 	ABDOMEN: 178,
@@ -382,6 +401,7 @@ function importPages(
 					const parses = parser([data, 0]);
 					const successes = parses.filter(isResult);
 					if (successes.length == 1) {
+						restoreDescriptions(successes[0].result[0]);
 						if (rankIndex) {
 							applyRankIndex(successes[0].result[0] as unknown as Beast[], rankIndex);
 						}

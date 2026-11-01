@@ -2915,7 +2915,7 @@ export class FultimatorImportApplication extends foundry.applications.api.Handle
 	};
 
 	static PARTS = {
-		form: { template: "modules/fu-parser/templates/import-fultimator.hbs" },
+		form: { template: "modules/fu-parser-it/templates/import-fultimator.hbs" },
 	};
 
 	static async #onSubmit(

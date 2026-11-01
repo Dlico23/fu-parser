@@ -113,6 +113,8 @@ function divideImagesByCategory(
 
 const isLastItemToken = (token: StringToken, tokenIdx: number, stringTokens: StringToken[]) =>
 	token.string.endsWith(".") &&
+	// Italian page references, "(vedi pag." + page number, do not end a sentence.
+	!/\bpag\.$/.test(token.string) &&
 	!(
 		stringTokens[tokenIdx + 1]?.font?.endsWith("PTSans-Narrow") ||
 		stringTokens[tokenIdx + 1]?.font?.includes("Wingdings-Regular") ||

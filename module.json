@@ -1,7 +1,7 @@
 {
-    "id": "fu-parser",
-    "title": "Fabula Ultima PDF Parser",
-    "description": "Parse the Fabula Ultima pdf for importing.",
+    "id": "fu-parser-it",
+    "title": "Fabula Ultima PDF Parser (Italiano)",
+    "description": "Importa i PDF italiani di Fabula Ultima (Need Games), oltre a quelli inglesi supportati.",
     "authors": [
       {
       "name": "xeqi"

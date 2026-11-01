@@ -5,6 +5,7 @@ import { Image } from "../model/common";
 
 export const tokenizePDF = async (
 	docId: string | URL | TypedArray | ArrayBuffer | DocumentInitParameters,
+	transform: (tokens: Token[]) => Token[] = (tokens) => tokens,
 ): Promise<
 	[<R>(pageNum: number, f: (d: Token[]) => Promise<R>) => Promise<[R, () => boolean]>, () => Promise<void>]
 > => {
@@ -63,7 +64,7 @@ export const tokenizePDF = async (
 					}
 				}
 			}
-			const r = await f(data.tokens);
+			const r = await f(transform(data.tokens));
 			return [r, () => page.cleanup()];
 		},
 		() => doc.destroy(),

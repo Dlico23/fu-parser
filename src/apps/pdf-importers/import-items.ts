@@ -16,6 +16,7 @@ import { Shield } from "../../pdf/model/shield";
 import { Accessory } from "../../pdf/model/accessory";
 import { WeaponModule } from "../../pdf/model/weapon-module";
 import { CampActivity } from "../../pdf/model/camp-activity";
+import { restoreDescriptions } from "../../pdf/locale/it";
 
 const FUCR_PAGES = [134, 135, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289];
 const FUHF_PAGES = [80, 81, 82, 83];
@@ -53,6 +54,7 @@ export function importItems(
 					return Array.from(
 						parsePage(data)
 							.mapValues((items: Item[], category: ItemCategory) => {
+								restoreDescriptions(items);
 								const source = bookType + (pageNum - 2);
 								const folder = ((category: ItemCategory): string => {
 									switch (category) {

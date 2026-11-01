@@ -1,3 +1,4 @@
+import { localizeFolderName } from "../pdf/locale/it";
 import { Image, WeaponCategory } from "../pdf/model/common";
 
 declare global {
@@ -137,7 +138,8 @@ type Collection<Q> = {
 
 export const getFolder = async (folders: readonly string[], type: string) => {
 	let folder: Folder | null = null;
-	for (const folderName of folders) {
+	for (const rawName of folders) {
+		const folderName = localizeFolderName(rawName);
 		if (folder) {
 			folder =
 				folder.getSubfolders().find((f) => f.name === folderName) ||

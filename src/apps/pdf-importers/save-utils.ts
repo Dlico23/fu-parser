@@ -11,6 +11,8 @@ const toTitleCase = (str: string): string =>
 const toKebabCase = (str: string): string =>
 	str
 		.toLowerCase()
+		.normalize("NFD")
+		.replace(/\p{M}/gu, "")
 		.replace(/\s+/g, "-")
 		.replace(/[^\w-]/g, "");
 

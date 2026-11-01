@@ -1,5 +1,13 @@
 # Fabula Ultima importer
 
+> **Versione italiana.** Variante di [xeqi/fu-parser](https://github.com/xeqi/fu-parser) che importa anche i PDF italiani acquistati da Need Games: Manuale Base v1.4, Atlante High Fantasy v1.1 e Atlante Techno Fantasy v1.1. Il modulo si chiama `fu-parser-it` e può convivere con l'originale.
+>
+> **Installazione locale:** `npm ci`, `npm run build`, poi copia il contenuto di `dist` in `Data/modules/fu-parser-it` di Foundry. Il libro si sceglie dal menu "Book type".
+>
+> **Test sui PDF:** i PDF e i token estratti non vanno mai inseriti nella repo, perché contengono testo protetto e un watermark con dati personali. Copia i manuali in una cartella esterna come `FUCR.pdf`, `FUHF.pdf` e `FUTF.pdf`, poi esegui `FU_IT_PDF_DIR=<cartella> npm run test`.
+>
+> **Licenza:** la repo originale non dichiara una licenza. Chiedi il permesso all'autore prima di pubblicare questa variante.
+
 This [Foundry Virtual Tabletop](https://foundryvtt.com/) module is designed to work with [Unofficial Fabula Ultima System](https://github.com/League-of-Fabulous-Developers/FoundryVTT-Fabula-Ultima).  It add buttons for importing data from:
 1. an english pdf, watermarked by DriveThruRPG, of [Fabula Ultima](https://www.needgames.it/fabula-ultima-en/) by [Need Games](https://www.needgames.it/)
 2. [Fultimator!](https://fabula-ultima-helper.web.app/)

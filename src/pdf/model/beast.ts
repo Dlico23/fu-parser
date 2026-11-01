@@ -13,6 +13,7 @@ import {
 	StatusEffect,
 } from "./common";
 import { FUActor, FUItem } from "../../external/project-fu";
+import { parseItalianSpellDamage } from "../locale/it";
 
 export type BeastRank = "soldier" | "elite" | "champion" | "companion" | "custom";
 
@@ -90,11 +91,11 @@ const parseSpellDamage = (description: string): { value: number; type: DamageTyp
 	const typeAlternation = DAMAGE_TYPES.join("|");
 	const re = new RegExp(`\\(\\s*HR\\s*[+＋]\\s*(\\d+)\\s*\\)\\s*(${typeAlternation})\\s+damage`, "i");
 	const m = description.match(re);
-	if (!m) return null;
+	if (!m) return parseItalianSpellDamage(description);
 	return { value: Number(m[1]), type: m[2].toLowerCase() as DamageType };
 };
 
-const spellIgnoresResistances = (description: string): boolean => /ignores?\s+Resistances?/i.test(description);
+const spellIgnoresResistances = (description: string): boolean => /ignores?\s+Resistances?|ignor\w*[^.]*Resistenze/i.test(description);
 
 const FU_SPECIES = ["beast", "construct", "demon", "elemental", "humanoid", "monster", "plant", "undead"] as const;
 const toSpecies = (type: string): string => {
@@ -384,19 +385,24 @@ function calculateInitBonus(b: Beast, equipment: FUItem[]): number {
 function determineTargeting(targetDesc: string): { targetingRule: string; maxTargets: number } {
 	switch (targetDesc) {
 		case "One creature":
+		case "Una creatura":
 			return { targetingRule: "single", maxTargets: 1 };
 		case "Up to three creatures":
+		case "Fino a tre creature":
 			return { targetingRule: "multiple", maxTargets: 3 };
 		case "Special":
+		case "Speciale":
 			return { targetingRule: "special", maxTargets: 1 };
 		case "Self":
+		case "Te stesso":
+		case "Incantatore":
 			return { targetingRule: "self", maxTargets: 1 };
 		default:
 			return { targetingRule: "single", maxTargets: 1 };
 	}
 }
 
-const perTargetMpRegex = /(\d+)\s*(x|×)\s*T/i;
+const perTargetMpRegex = /(\d+)\s*(x|×)\s*[TB]\b/i;
 function parseMpCost(mpDesc: string): { amount: number; perTarget: boolean } {
 	const matchPerTarget = mpDesc.match(perTargetMpRegex);
 	if (matchPerTarget) {
