@@ -6,13 +6,15 @@
 >
 > **Test sui PDF:** i PDF e i token estratti non vanno mai inseriti nella repo, perché contengono testo protetto e un watermark con dati personali. Copia i manuali in una cartella esterna come `FUCR.pdf`, `FUHF.pdf` e `FUTF.pdf`, poi esegui `FU_IT_PDF_DIR=<cartella> npm run test`.
 >
-> **Licenza:** la repo originale non dichiara una licenza. Chiedi il permesso all'autore prima di pubblicare questa variante.
+> **Licenza:** la repo originale non dichiara una licenza, quindi nemmeno questa variante ne concede una.
 
 This [Foundry Virtual Tabletop](https://foundryvtt.com/) module is designed to work with [Unofficial Fabula Ultima System](https://github.com/League-of-Fabulous-Developers/FoundryVTT-Fabula-Ultima).  It add buttons for importing data from:
-1. an english pdf, watermarked by DriveThruRPG, of [Fabula Ultima](https://www.needgames.it/fabula-ultima-en/) by [Need Games](https://www.needgames.it/)
+1. a pdf of [Fabula Ultima](https://www.needgames.it/fabula-ultima-en/) by [Need Games](https://www.needgames.it/): english, watermarked by DriveThruRPG, or italian (Manuale Base v1.4, Atlante High Fantasy v1.1, Atlante Techno Fantasy v1.1), bought from Need Games
 2. [Fultimator!](https://fabula-ultima-helper.web.app/)
 
 ## Installation
+
+The manifest below installs the original english-only module. For italian pdfs use the local installation described at the top of this file.
 
 1. Open the Foundry Setup screen and navigate to the "Add-on Modules" tab.
 2. Click the "Install Module" button on the bottom left.
