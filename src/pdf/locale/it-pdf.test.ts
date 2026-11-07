@@ -26,6 +26,8 @@ const importersFor = {
 	],
 	FUHF: (withPage: Parameters<typeof importItems>[0]) => [importItems(withPage, "FUHF"), importHighFantasyBestiary(withPage)],
 	FUTF: (withPage: Parameters<typeof importItems>[0]) => [importItems(withPage, "FUTF"), importTechnoFantasyBestiary(withPage)],
+	// shortcut: the Italian Natural Fantasy bestiary draws its icons with other fonts (Evilz) and does not parse yet, add importNaturalFantasyBestiary once it does.
+	FUNF: (withPage: Parameters<typeof importItems>[0]) => [importItems(withPage, "FUNF")],
 };
 
 describeWithPdfs("Italian PDFs", () => {

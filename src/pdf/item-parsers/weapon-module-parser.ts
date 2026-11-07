@@ -2,6 +2,7 @@ import { ItemWithImageToken, StringToken } from "../lexers/token";
 import { convertCosts, parseDescription } from "../parsers-commons";
 import { DamageType, Distance, Stat, WeaponCategory } from "../model/common";
 import { WeaponModule } from "../model/weapon-module";
+import { toSystemStat, toSystemValue } from "../locale/it";
 
 export function parseWeaponModule(weaponModuleToken: ItemWithImageToken): WeaponModule {
 	const isShield =
@@ -51,19 +52,19 @@ function parseWeapon(weaponModuleToken: ItemWithImageToken): WeaponModule {
 
 	const bonus = isNaN(maybeBonus) ? 0 : maybeBonus;
 	const accuracy = {
-		primary: primaryAccuracyStat.trim() as Stat,
-		secondary: secondaryAccuracyStat.trim() as Stat,
+		primary: toSystemStat(primaryAccuracyStat) as Stat,
+		secondary: toSystemStat(secondaryAccuracyStat) as Stat,
 		bonus: bonus,
 	};
 
 	// We skip index 5(+) and 7(+), these are "【" and "】"
 	const damage = Number(weaponModuleStringTokens[6 + indexShift].slice(5)); // Removing "HR + " part
-	const damageType = weaponModuleStringTokens[8 + indexShift] as DamageType;
+	const damageType = toSystemValue(weaponModuleStringTokens[8 + indexShift]) as DamageType;
 
-	const category = weaponModuleStringTokens[9 + indexShift].toLowerCase() as WeaponCategory;
+	const category = toSystemValue(weaponModuleStringTokens[9 + indexShift]).toLowerCase() as WeaponCategory;
 
 	// We skip index 10(+) this is section separator
-	const distance = weaponModuleStringTokens[11 + indexShift].toLowerCase() as Distance;
+	const distance = toSystemValue(weaponModuleStringTokens[11 + indexShift]).toLowerCase() as Distance;
 
 	// We skip index 12(+) this is section separator
 	const description = parseModuleDescription(weaponModuleToken.strings.slice(13 + indexShift));

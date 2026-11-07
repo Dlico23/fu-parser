@@ -2,6 +2,7 @@ import { ItemWithImageToken } from "../lexers/token";
 import { convertCosts, isMartial, parseDescription } from "../parsers-commons";
 import { Weapon } from "../model/weapon";
 import { DAMAGE_TYPES, DamageType, Distance, DISTANCES, Handed, HANDED, Stat, WeaponCategory } from "../model/common";
+import { toSystemStat, toSystemValue } from "../locale/it";
 
 export function parseWeapon(weaponToken: ItemWithImageToken, optionalWeaponCategory: string): Weapon {
 	// This value will change depending on optional martial and accuracy bonus strings
@@ -29,8 +30,8 @@ export function parseWeapon(weaponToken: ItemWithImageToken, optionalWeaponCateg
 	}
 	const bonus = isNaN(maybeBonus) ? 0 : maybeBonus;
 	const accuracy = {
-		primary: primaryAccuracyStat.trim() as Stat,
-		secondary: secondaryAccuracyStat.trim() as Stat,
+		primary: toSystemStat(primaryAccuracyStat) as Stat,
+		secondary: toSystemStat(secondaryAccuracyStat) as Stat,
 		bonus: bonus,
 	};
 
@@ -38,10 +39,10 @@ export function parseWeapon(weaponToken: ItemWithImageToken, optionalWeaponCateg
 	const damage = Number(weaponStringTokens[6 + indexShift].slice(5)); // Removing "HR + " part
 
 	// Sometimes light type damage is separated to l + ight
-	const damageType = (
+	const damageType = toSystemValue(
 		weaponStringTokens[8 + indexShift] === "l"
 			? weaponStringTokens[8 + indexShift] + weaponStringTokens[8 + ++indexShift]
-			: weaponStringTokens[8 + indexShift]
+			: weaponStringTokens[8 + indexShift],
 	) as DamageType;
 
 	if (optionalWeaponCategory === "") {
@@ -49,7 +50,7 @@ export function parseWeapon(weaponToken: ItemWithImageToken, optionalWeaponCateg
 	}
 	const category =
 		optionalWeaponCategory === ""
-			? (weaponStringTokens[8 + indexShift].toLowerCase() as WeaponCategory)
+			? (toSystemValue(weaponStringTokens[8 + indexShift]).toLowerCase() as WeaponCategory)
 			: (optionalWeaponCategory.toLowerCase() as WeaponCategory);
 
 	if (optionalWeaponCategory === "") {
@@ -57,10 +58,10 @@ export function parseWeapon(weaponToken: ItemWithImageToken, optionalWeaponCateg
 		indexShift++;
 	}
 
-	const hands = weaponStringTokens[9 + indexShift].toLowerCase() as Handed;
+	const hands = toSystemValue(weaponStringTokens[9 + indexShift]).toLowerCase() as Handed;
 
 	// We skip index 11(+) this is section separator
-	const distance = weaponStringTokens[11 + indexShift].toLowerCase() as Distance;
+	const distance = toSystemValue(weaponStringTokens[11 + indexShift]).toLowerCase() as Distance;
 
 	// We skip index 13(+) this is section separator
 	const description = parseDescription(

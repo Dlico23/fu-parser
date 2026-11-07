@@ -7,7 +7,22 @@ import {
 	parseItalianSpellDamage,
 	restoreDescriptions,
 	setItalianActive,
+	toSystemStat,
+	toSystemValue,
 } from "./it";
+
+test("toSystemValue turns Italian table values into Foundry system values", () => {
+	expect(["fisico", "Due mani", "Mischia", "Distanza", "Da lancio", "luce"].map(toSystemValue)).toEqual([
+		"physical",
+		"two-handed",
+		"melee",
+		"ranged",
+		"thrown",
+		"light",
+	]);
+	expect(toSystemValue("Mestolo")).toBe("Mestolo");
+	expect([" DES", "VOL "].map(toSystemStat)).toEqual(["DEX", "WLP"]);
+});
 
 const ICON = "ABCDEF+FabulaUltimaicons-Regular";
 const BOLD = "ABCDEF+PTSans-NarrowBold";

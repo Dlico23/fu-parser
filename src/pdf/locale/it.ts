@@ -4,10 +4,10 @@ import { DamageType } from "../model/common";
 // The Italian PDFs share layout and fonts with the English ones. Structural tokens are rewritten to English
 // so the existing parsers can read them, while names and rules text stay in Italian.
 
-export type ItalianBook = "FUCR" | "FUHF" | "FUTF";
+export type ItalianBook = "FUCR" | "FUHF" | "FUTF" | "FUNF";
 
 // A stat block page of each book: the Italian PDFs read "Liv 10" where the English ones read "Lv 10".
-const STAT_BLOCK_PAGES: Record<ItalianBook, number> = { FUCR: 326, FUHF: 172, FUTF: 188 };
+const STAT_BLOCK_PAGES: Record<ItalianBook, number> = { FUCR: 326, FUHF: 172, FUTF: 188, FUNF: 180 };
 
 export const detectItalianBook = async (
 	withPage: <R>(pageNum: number, f: (d: Token[]) => Promise<R>) => Promise<[R, () => boolean]>,
@@ -115,8 +115,18 @@ const WEAPON_CATEGORIES_IT: Record<string, string> = {
 	pesante: "Heavy",
 	pugnale: "Dagger",
 	"da rissa": "Brawling",
+	rissa: "Brawling",
 	spada: "Sword",
 };
+
+// Foundry only accepts the English system values, so table values the token rewrite missed are translated at parse time.
+const SYSTEM_VALUES_IT: Record<string, string> = Object.fromEntries(
+	[...Object.entries(DAMAGE_TYPES_IT), ...Object.entries(ROW_LABELS), ...Object.entries(WEAPON_CATEGORIES_IT)].map(
+		([it, en]) => [it.toLowerCase(), en.toLowerCase()],
+	),
+);
+export const toSystemValue = (s: string): string => SYSTEM_VALUES_IT[s.trim().toLowerCase()] ?? s;
+export const toSystemStat = (s: string): string => STATS[s.trim()] ?? s.trim();
 
 // Group titles of the Core Rulebook basic weapons tables.
 const WEAPON_GROUP_TITLES: Record<string, string> = {
@@ -145,7 +155,10 @@ const has = (t: Token | undefined, s: string, font: RegExp): boolean =>
 	!!t && isStringToken(t) && t.string === s && font.test(t.font);
 const isOpen = (t: Token | undefined) => has(t, "(", ICON);
 const isClose = (t: Token | undefined) => has(t, ")", ICON);
-const isSep = (t: Token | undefined) => has(t, "•", ICON) || has(t, "-", ICON);
+// The Italian Natural Fantasy Atlas draws the "•" separator with a Wingdings glyph.
+const WINGDINGS = /Wingdings-Regular$/;
+const isWingdingsSep = (t: Token | undefined) => !!t && isStringToken(t) && WINGDINGS.test(t.font) && t.string.trim().length === 1;
+const isSep = (t: Token | undefined) => has(t, "•", ICON) || has(t, "-", ICON) || isWingdingsSep(t);
 const asString = (t: Token | undefined): StringToken | null => (t && isStringToken(t) ? t : null);
 
 const isSectionToken = (t: Token | undefined) => !!t && isStringToken(t) && SECTION.test(t.font);
@@ -161,7 +174,7 @@ const translateSection = (s: string, previous: Token | undefined, mdefLabel: str
 	if (stat) return `${STATS[stat[1]]} ${stat[2]}`;
 	if (/^Iniz\. \d+$/.test(s)) return s.replace("Iniz.", "Init.");
 	if (/^DIF /.test(s)) return s.replace("DIF", "DEF");
-	if (/^D\.MAG /.test(s)) return s.replace("D.MAG", mdefLabel);
+	if (/^D\. ?MAG /.test(s)) return s.replace(/^D\. ?MAG/, mdefLabel);
 	if (s === "Speciale" && has(previous, "PV", SECTION)) return "Special";
 	return s.replace(
 		RANK_SUFFIX,
@@ -191,6 +204,11 @@ export const normalizeItalianTokens = (tokens: Token[], book: ItalianBook): Toke
 		const previous = tokens[i - 1];
 		const next = tokens[i + 1];
 		const push = (string: string) => out.push({ ...t, string });
+
+		if (isWingdingsSep(t)) {
+			out.push({ ...t, string: "•", font: t.font.replace(WINGDINGS, "FabulaUltimaicons-Regular") });
+			continue;
+		}
 
 		if (isOpen(previous) && BOLD.test(t.font)) {
 			// A line break can split "(VIG + VOL)" into two tokens.
@@ -343,6 +361,7 @@ const FOLDERS_IT: Record<string, string> = {
 	"Core Rulebook Equipment": "Equipaggiamento Manuale Base",
 	"High Fantasy Equipment": "Equipaggiamento High Fantasy",
 	"Techno Fantasy Equipment": "Equipaggiamento Techno Fantasy",
+	"Natural Fantasy Equipment": "Equipaggiamento Natural Fantasy",
 	Weapons: "Armi",
 	Armors: "Armature",
 	Shields: "Scudi",
@@ -352,6 +371,7 @@ const FOLDERS_IT: Record<string, string> = {
 	Beastiary: "Bestiario",
 	"High Fantasy Bestiary": "Bestiario High Fantasy",
 	"Techno Fantasy Bestiary": "Bestiario Techno Fantasy",
+	"Natural Fantasy Bestiary": "Bestiario Natural Fantasy",
 };
 
 export const localizeFolderName = (name: string): string => (italianActive ? (FOLDERS_IT[name] ?? name) : name);
