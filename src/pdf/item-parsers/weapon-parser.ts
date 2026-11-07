@@ -1,7 +1,7 @@
 import { ItemWithImageToken } from "../lexers/token";
 import { convertCosts, isMartial, parseDescription } from "../parsers-commons";
 import { Weapon } from "../model/weapon";
-import { DamageType, Distance, Handed, Stat, WeaponCategory } from "../model/common";
+import { DAMAGE_TYPES, DamageType, Distance, DISTANCES, Handed, HANDED, Stat, WeaponCategory } from "../model/common";
 
 export function parseWeapon(weaponToken: ItemWithImageToken, optionalWeaponCategory: string): Weapon {
 	// This value will change depending on optional martial and accuracy bonus strings
@@ -66,6 +66,11 @@ export function parseWeapon(weaponToken: ItemWithImageToken, optionalWeaponCateg
 	const description = parseDescription(
 		weaponToken.strings.slice(13 + indexShift).filter((token) => token.string !== "No Quality."),
 	);
+
+	// A row read out of place would otherwise reach Foundry and fail its validation there.
+	if (!HANDED.includes(hands) || !DISTANCES.includes(distance) || !DAMAGE_TYPES.includes(damageType)) {
+		throw new Error(`Unexpected weapon row: ${name} (${damageType}, ${hands}, ${distance})`);
+	}
 
 	return {
 		image: weaponToken.image.image,
